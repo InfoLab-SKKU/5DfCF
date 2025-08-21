@@ -113,3 +113,4 @@ class Metrics4DFMRI:
                 )
             scores.append(np.mean(slice_scores))
         return float(np.mean(scores))
+

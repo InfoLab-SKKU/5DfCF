@@ -89,3 +89,4 @@ class WarmupCosineSchedule(LambdaLR):
             0.0,
             0.5 * (1.0 + math.cos(math.pi * 2.0 * self.cycles * progress))
         )
+

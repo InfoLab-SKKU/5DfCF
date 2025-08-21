@@ -11,7 +11,7 @@ Traditional neuroimaging approaches often treat fMRI volumes as independent time
 - Seamlessly integrates period-aware positional embeddings to preserve the order of semiannual scans.
 - Offers two variants (Base and Tiny) to balance performance and computational cost.
 
-In experiments on longitudinal fMRI data from the Alzheimer’s Disease Neuroimaging Initiative (ADNI), the full model achieves **94.3% accuracy** and **94.1% AUC**, outperforming state-of-the-art baselines by 3–10 points in key metrics :contentReference[oaicite:0]{index=0}.
+In experiments on longitudinal fMRI data from the Alzheimer’s Disease Neuroimaging Initiative (ADNI), the full model achieves **94.3% accuracy** and **94.1% AUC**, outperforming state-of-the-art baselines by 3–10 points in key performance metrics.
 
 ---
 
@@ -29,14 +29,14 @@ In experiments on longitudinal fMRI data from the Alzheimer’s Disease Neuroima
 ## Figures
 
 ### Fig. 1. Model Architecture
-![Fig. 1: Model Architecture](readme_files/fig1.png)  
+![Fig. 1: Model Architecture](readme_files/fig_1.png)  
 **Description:**  
 The overall structure of the 5D fMRI CrossFormer. Four depths alternate between a **5D Cross-Scale Embedding Layer (5D-CEL)**—which applies parallel 3D convolutions at multiple scales to embed each period–time volume into tokens—and a **5D CrossFormer Block** that fuses period-wise 4D attention with global 5D short-distance attention. Skip-connections carry intermediate embeddings forward, and a final classification head aggregates the last set of tokens into diagnostic predictions.
 
 ---
 
 ### Fig. 2. Processing Flow (Algorithm 1)
-![Fig. 2: Processing Flow](readme_files/fig2.png)  
+![Fig. 2: Processing Flow](readme_files/fig_2.png)  
 **Description:**  
 Step-by-step pipeline of the 5D fMRI CrossFormer:
 1. **Input** raw 5D volume \(I \in \mathbb{R}^{P\times T\times H\times W\times D}\).
@@ -50,7 +50,7 @@ Step-by-step pipeline of the 5D fMRI CrossFormer:
 ---
 
 ### Fig. 3. Performance Comparison (Table 3)
-![Fig. 3: Performance Comparison](readme_files/fig3.png)  
+![Fig. 3: Performance Comparison](readme_files/fig_3.png)  
 **Description:**  
 Comparison of methods on the ADNI dataset:
 - **Accuracy & AUC:** Our 5D CrossFormer reaches **94.3%** accuracy and **94.1** AUC, outperforming CNN+LSTM (79.96%/78.4) and all ACI-FBN variants.
@@ -60,7 +60,7 @@ Comparison of methods on the ADNI dataset:
 ---
 
 ### Fig. 4. Training Accuracy & Loss (Fig. 3)
-![Fig. 4: Training Accuracy & Loss](readme_files/fig4.png)  
+![Fig. 4: Training Accuracy & Loss](readme_files/fig_4.png)  
 **Description:**
 - **(a) Training Accuracy:** The CrossFormer (cyan) converges rapidly—surpassing other methods by epoch 40—and plateaus near **0.95**.
 - **(b) Training Loss:** Exhibits a steep early decline and stabilizes around **0.2**, indicating effective feature learning and regularization.
@@ -68,7 +68,7 @@ Comparison of methods on the ADNI dataset:
 ---
 
 ### Fig. 5. Calibration & ROC Curves (Fig. 4)
-![Fig. 5: Calibration & ROC Curves](readme_files/fig5.png)  
+![Fig. 5: Calibration & ROC Curves](readme_files/fig_5.png)  
 **Description:**
 - **(a) Calibration Curves:** Predicted probabilities of the CrossFormer closely align with the perfect calibration line, indicating reliable confidence estimates.
 - **(b) ROC Curves:** With an **AUC of 0.941**, our model outperforms all baselines, achieving higher true positive rates across false positive thresholds and demonstrating superior discriminative power.
