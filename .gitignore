@@ -1,0 +1,7 @@
+# Local macOS metadata
+.DS_Store
+
+# Python and Jupyter caches
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/

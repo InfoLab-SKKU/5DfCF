@@ -1,3 +1,4 @@
+# Keep per-user JetBrains state out of the shared project settings.
 # Default ignored files
 /shelf/
 /workspace.xml
