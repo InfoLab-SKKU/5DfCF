@@ -137,6 +137,7 @@ pip install -r requirements.txt
 │       └── seed_creation.py
 ├── readme_files/
 ├── csv_file.ipynb
+├── prepare_adni_csv.py
 ├── LICENSE
 └── README.md
 ```
@@ -167,12 +168,23 @@ pip install torch torchvision numpy pandas scikit-learn pyyaml
 
 ## Usage
 
-### 1. Data Preparation
+### 1. Prepare the ADNI CSV manifest
 
-Ensure your CSV files are placed under `data/csv_data/adni_csv_final/`, for example:
-```text
-data/csv_data/adni_csv_final/ADNI_filtered_data.csv
-````
+NIAK handles upstream fMRI image preprocessing. The `prepare_adni_csv.py` script reproduces the CSV metadata workflow in `csv_file.ipynb` using an ADNIMERGE clinical export and an ADNI fMRI scan metadata export. Run it from the repository root with Python and pandas 2.0 or later.
+
+```bash
+python -m pip install "pandas>=2.0"
+python prepare_adni_csv.py \
+  --adnimerge data/csv_data/ADNIMERGE_12Dec2024.csv \
+  --imaging-csv data/csv_data/chris_5D_fmri_adni_final_12_31_2024.csv \
+  --output data/csv_data/adni_csv_final/adni_manifest.csv
+```
+
+The script matches clinical visits to scan records by participant and calendar month, then selects approximately annual visits over five calendar years. It retains participants with at least two matched visits after this selection. The notebook's pMCI selection requires both MCI and Dementia diagnoses among the retained visits. Missing annual slots use a copy of the closest later retained visit and preserve its acquisition date.
+
+The output includes participant ID, diagnosis, scan group, class label (0 for sMCI and 1 for pMCI), image ID, reported age, age at the clinical visit, and acquisition date. Participant splitting and training-set SMOTE are downstream steps.
+
+The commands in Sections 2–4 outline the training and evaluation workflow. To execute those stages, use the experiment's runnable entry points and configuration files.
 
 ### 2. Preprocessing & Dataset Setup
 
