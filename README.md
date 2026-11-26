@@ -66,11 +66,12 @@ The plots cover 100 epochs and include BNT and SwiFT.
 
 ---
 
-### Fig. 5. Calibration and ROC Curves
+### Fig. 5. Calibration and ROC Curves (Paper Fig. 4)
 
-![Calibration and ROC curves from the earlier six-method comparison](readme_files/fig_5.png)
+![Calibration and ROC curves for 5DfCF and seven baseline configurations](readme_files/fig_5.png)
 
-This figure shows the earlier six-method comparison. The ROC legend gives 94.1% AUC for the displayed 5DfCF curve. The three-run benchmark is summarized in Fig. 3.
+- **(a) Calibration.** The 5DfCF points broadly follow the reference diagonal. The BNT and SwiFT curves fall below it at several intermediate predicted probabilities.
+- **(b) ROC.** The plotted 5DfCF curve reaches higher true-positive rates across much of the low false-positive-rate range. The curve is labeled **94.1% AUC**. Fig. 3 reports the three-run mean ROC-AUC of **94.2 ± 0.4%**.
 
 ---
 
