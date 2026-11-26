@@ -8,10 +8,10 @@ Traditional neuroimaging approaches often treat fMRI volumes as independent time
 
 - Embeds multi-scale spatial patches across both intra-session and inter-session dimensions.
 - Applies dedicated 4D and 5D attention mechanisms to capture both local and global spatiotemporal dependencies.
-- Seamlessly integrates period-aware positional embeddings to preserve the order of semiannual scans.
-- Offers two variants (Base and Tiny) to balance performance and computational cost.
+- Uses period-aware positional embeddings to preserve visit order.
+- Offers Base and Tiny backbones, with a LoRA adaptation evaluated for Tiny.
 
-In experiments on longitudinal fMRI data from the Alzheimer’s Disease Neuroimaging Initiative (ADNI), the full model achieves **94.3% accuracy** and **94.1% AUC**, outperforming state-of-the-art baselines by 3–10 points in key performance metrics.
+In the longitudinal Alzheimer’s Disease Neuroimaging Initiative (ADNI) benchmark, 5DfCF Base achieved **94.4 ± 0.3% accuracy** and **94.2 ± 0.4% ROC-AUC** across three runs (mean ± standard deviation).
 
 ---
 
@@ -20,9 +20,7 @@ In experiments on longitudinal fMRI data from the Alzheimer’s Disease Neuroima
 - **5D Cross-Scale Embedding Layer (5D-CEL):** Parallel 3D convolutions with multiple kernel sizes embed each fMRI volume into a unified token representation (see Fig. 2).
 - **4D CrossFormer Block:** Dual‐path self-attention (4D-SDA for local windows and 4D-LDA for long-range dependencies) combined with absolute positional embeddings ensures rich intra-session feature extraction.
 - **Period CrossFormer Block (PCB):** 5D short-distance attention (5D-SDA) fuses period-specific outputs from the 4D blocks, enhanced by period positional embeddings to capture inter-session evolution.
-- **Variants:**
-    - **Base:** Higher token dimensions and deeper layers for maximum accuracy.
-    - **Tiny:** Reduced depth and channel sizes for 20% fewer parameters and 23% faster training, while still achieving 90.8% accuracy.
+- **Base** uses wider token embeddings and deeper layers. **Tiny** uses a narrower, shallower backbone to reduce training and inference costs.
 
 ---
 
@@ -49,45 +47,45 @@ Step-by-step pipeline of the 5D fMRI CrossFormer:
 
 ---
 
-### Fig. 3. Performance Comparison (Table 3)
-![Fig. 3: Performance Comparison](readme_files/fig_3.png)  
-**Description:**  
-Comparison of methods on the ADNI dataset:
-- **Accuracy & AUC:** Our 5D CrossFormer reaches **94.3%** accuracy and **94.1** AUC, outperforming CNN+LSTM (79.96%/78.4) and all ACI-FBN variants.
-- **Precision, Recall, F1-Score:** Achieves **93.6%** precision, **92.1%** recall, and **93.4%** F1-score—demonstrating balanced class performance.
-- **Efficiency:** Training time of **15.1 h** and **19.52 M** parameters remain competitive versus heavier baselines.
+### Fig. 3. ADNI Benchmark (Paper Table 4)
+
+![ADNI benchmark across three runs, including BNT and SwiFT](readme_files/fig_3.png)
+
+5DfCF Base had the highest mean on all five reported classification metrics, including **93.9 ± 0.5% precision**, **92.4 ± 1.0% recall**, and **93.2 ± 0.4% F1**. Its mean accuracy was **2.9 percentage points** higher than SwiFT's, and its mean ROC-AUC was **2.2 points** higher than that of six-ROI Full Asynch ACI-FBN. BNT achieved 89.4 ± 1.1% accuracy and 90.2 ± 1.2% ROC-AUC.
 
 ---
 
-### Fig. 4. Training Accuracy & Loss (Fig. 3)
-![Fig. 4: Training Accuracy & Loss](readme_files/fig_4.png)  
-**Description:**
-- **(a) Training Accuracy:** The CrossFormer (cyan) converges rapidly—surpassing other methods by epoch 40—and plateaus near **0.95**.
-- **(b) Training Loss:** Exhibits a steep early decline and stabilizes around **0.2**, indicating effective feature learning and regularization.
+### Fig. 4. Training Accuracy and Loss (Paper Fig. 3)
+
+The plots cover 100 epochs and include BNT and SwiFT.
+
+![Training accuracy and loss over 100 epochs](readme_files/fig_4.png)
+
+- **(a) Training accuracy.** The six-ROI Full Asynch ACI-FBN curve rises earlier. The 5DfCF curve reaches about 90% around epoch 50 and stays near 95% toward the end. BNT and SwiFT finish at 88.4% and 90.9%, respectively.
+- **(b) Training loss.** The 5DfCF curve ends near 0.23, compared with 0.40 for BNT and 0.34 for SwiFT. Fig. 3 reports classification results on held-out participants.
 
 ---
 
-### Fig. 5. Calibration & ROC Curves (Fig. 4)
-![Fig. 5: Calibration & ROC Curves](readme_files/fig_5.png)  
-**Description:**
-- **(a) Calibration Curves:** Predicted probabilities of the CrossFormer closely align with the perfect calibration line, indicating reliable confidence estimates.
-- **(b) ROC Curves:** With an **AUC of 0.941**, our model outperforms all baselines, achieving higher true positive rates across false positive thresholds and demonstrating superior discriminative power.
+### Fig. 5. Calibration and ROC Curves
 
+![Calibration and ROC curves from the earlier six-method comparison](readme_files/fig_5.png)
+
+This figure shows the earlier six-method comparison. The ROC legend gives 94.1% AUC for the displayed 5DfCF curve. The three-run benchmark is summarized in Fig. 3.
+
+---
+
+## Additional ADNI Results
+
+- At held-out ADNI site 137, 5DfCF and SwiFT each correctly classified **10 of 11 participants (90.9%)**. After one observed visit per participant was removed, 5DfCF still classified 10 of 11 correctly, while SwiFT classified 8 of 11.
+- In the separate efficiency comparison, **Tiny** achieved **90.8% accuracy** and **89.8% ROC-AUC**, used 15.61 million parameters, and trained in 11.7 hours. **Tiny+LoRA** achieved **90.5% accuracy** and **88.7% ROC-AUC**, used 15.60 million parameters, and trained in 10.3 hours.
 
 ---
 
 ## Datasets
 
-We leveraged the Alzheimer’s Disease Neuroimaging Initiative (ADNI) longitudinal fMRI cohort:
+The ADNI cohort comprised **245 participants**, including 190 with stable mild cognitive impairment (sMCI) and 55 with progressive mild cognitive impairment (pMCI). The sMCI group remained at MCI during follow-up. The pMCI group progressed from MCI to dementia.
 
-| Dataset | sMCI | pMCI | Total |
-|---------|:----:|:----:|:-----:|
-| **Unbalanced** | 190 |  55  |  245  |
-| **Balanced**   | 190 | 180  |  370  |
-
-- **Stable MCI (sMCI):** Subjects whose diagnoses remained “MCI” across all visits.
-- **Progressive MCI (pMCI):** Subjects whose diagnoses converted from “MCI” to “Dementia” at any follow-up.
-- **Preprocessing:** Exclude single-visit subjects; impute missing annual scans via nearest available timepoint; balance classes using SMOTE. 
+Participants were split into training (70%), validation (15%), and test (15%) sets. SMOTE was applied only to the training set after splitting, producing **133 sMCI and 133 pMCI training samples**. The validation and test sets retained their original class distributions.
 
 ---
 
